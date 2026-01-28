@@ -7,24 +7,27 @@ diameter = 60*MM
 lid_thickn = 2*MM
 thread_height = 18*MM
 usable_height = 65*MM
-wall_width = 5*MM
+#wall_width = 5*MM
+botthickn = 5*MM
+topinnerdia = 55*MM
 slackn = 0.3*MM
+hborderw = 7*MM # width of the top border (on the bolt)
+handlew = 5*MM # width of the handle which is sunk into the bolt top
 
 #calculated, do not change
 
 flask_height = thread_height + lid_thickn + usable_height
 flask_radius = diameter/2
-topinnerdia = 55*MM
 bolttopdia = topinnerdia - 2*slackn
-hborderw = 6*MM # width of the top border (on the bolt)
-handlew = 3*MM # width of the handle which is sunk into the bolt top
+wall_width = diameter - topinnerdia
 handled = thread_height/2
 thread_interfear = 1.0 #overlap of thread windings to bolt or nut
 
 hlp_ali = (Align.CENTER,Align.CENTER, Align.MIN)
 cyl = Plane.XY  * Cylinder(flask_radius, flask_height, align=hlp_ali)
-cyl -= Plane.XY * Pos(0,0,wall_width) * Cylinder(flask_radius-wall_width, flask_height, align=hlp_ali)
-cyl -= Plane.XY * Pos(0,0,usable_height) * Cylinder(topinnerdia/2, thread_height + lid_thickn, align=hlp_ali)
+#cyl -= Plane.XY * Pos(0,0,wall_width) * Cylinder(flask_radius-wall_width, flask_height, align=hlp_ali)
+cyl -= Plane.XY * Pos(0,0,botthickn) * Cylinder(topinnerdia/2, flask_height+lid_thickn, align=hlp_ali)
+#cyl -= Plane.XY * Pos(0,0,usable_height) * Cylinder(topinnerdia/2, thread_height + lid_thickn, align=hlp_ali)
 inthr = Plane.XY * Pos(0,0, usable_height) * MetricTrapezoidalThread(size="55x9",
                                                                      length=thread_height, 
                                                                      external=False, 
@@ -33,7 +36,7 @@ inthr = Plane.XY * Pos(0,0, usable_height) * MetricTrapezoidalThread(size="55x9"
 cyl = chamfer(cyl.edges().group_by(Axis.Z)[1], length=2*MM)
 cyl = chamfer(cyl.edges().group_by(Axis.Z)[0], length=2*MM)
 
-wallsk = Plane.XZ * Pos(-0.33*(diameter-wall_width)/2,usable_height*0.9/2) * make_face(Rectangle(1.2*MM, usable_height*0.9))
+wallsk = Plane.XZ * Pos(-0.2*(diameter-wall_width)/2,usable_height*0.9/2) * make_face(Rectangle(1.2*MM, usable_height*0.9))
 wall = extrude(wallsk, until=Until.LAST, target=cyl)
 wall += extrude(wallsk, until=Until.FIRST, target=cyl)
 cyl += wall
@@ -62,8 +65,8 @@ bolt -= toppl * cutout
 bolt = chamfer(bolt.edges().group_by(Axis.Z)[0], 2.0)
 bolt += boltthr
 
-export_stl(bolt.solid(), "./stl/bolt.stl")
-export_stl(cyl.solid(), "./stl/cyl.stl")
+export_stl(bolt.solid(), "./stl/lid.stl")
+export_stl(cyl.solid(), "./stl/body.stl")
 
 show_clear()
 show_all()
