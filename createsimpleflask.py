@@ -7,7 +7,7 @@ from bd_warehouse.thread import MetricTrapezoidalThread, PlasticBottleThread
 diameter = 60*MM
 lid_thickn = 2*MM
 thread_height = 18*MM
-usable_height = 65*MM
+usable_height = 70*MM
 #wall_width = 5*MM
 botthickn = 5*MM
 topinnerdia = 55*MM
