@@ -2,6 +2,7 @@ from build123d import *
 from ocp_vscode import *
 from bd_warehouse.thread import MetricTrapezoidalThread, PlasticBottleThread
 
+
 #parameters
 diameter = 60*MM
 lid_thickn = 2*MM
@@ -25,9 +26,7 @@ thread_interfear = 1.0 #overlap of thread windings to bolt or nut
 
 hlp_ali = (Align.CENTER,Align.CENTER, Align.MIN)
 cyl = Plane.XY  * Cylinder(flask_radius, flask_height, align=hlp_ali)
-#cyl -= Plane.XY * Pos(0,0,wall_width) * Cylinder(flask_radius-wall_width, flask_height, align=hlp_ali)
 cyl -= Plane.XY * Pos(0,0,botthickn) * Cylinder(topinnerdia/2, flask_height+lid_thickn, align=hlp_ali)
-#cyl -= Plane.XY * Pos(0,0,usable_height) * Cylinder(topinnerdia/2, thread_height + lid_thickn, align=hlp_ali)
 inthr = Plane.XY * Pos(0,0, usable_height) * MetricTrapezoidalThread(size="55x9",
                                                                      length=thread_height, 
                                                                      external=False, 
@@ -36,7 +35,7 @@ inthr = Plane.XY * Pos(0,0, usable_height) * MetricTrapezoidalThread(size="55x9"
 cyl = chamfer(cyl.edges().group_by(Axis.Z)[1], length=2*MM)
 cyl = chamfer(cyl.edges().group_by(Axis.Z)[0], length=2*MM)
 
-wallsk = Plane.XZ * Pos(-0.2*(diameter-wall_width)/2,usable_height*0.9/2) * make_face(Rectangle(1.2*MM, usable_height*0.9))
+wallsk = Plane.XZ * Pos(-0.2*(diameter-wall_width)/2,usable_height*0.8/2) * make_face(Rectangle(1.2*MM, usable_height*0.9))
 wall = extrude(wallsk, until=Until.LAST, target=cyl)
 wall += extrude(wallsk, until=Until.FIRST, target=cyl)
 cyl += wall
@@ -68,5 +67,4 @@ bolt += boltthr
 export_stl(bolt.solid(), "./stl/lid.stl")
 export_stl(cyl.solid(), "./stl/body.stl")
 
-show_clear()
 show_all()
